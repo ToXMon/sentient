@@ -45,7 +45,6 @@ if os.environ.get("ENABLE_DEV_CORS", "false").lower() == "true":
     )
 
 
-
 # ── Lifespan (startup / shutdown) ──────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
