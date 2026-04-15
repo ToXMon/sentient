@@ -12,7 +12,7 @@ from app.database import get_db
 from app.models import WaitlistEntry
 from app.schemas import WaitlistResponse
 from app.utils.security import verify_api_key
-from app.main import limiter
+from app.utils.limiter import limiter
 
 logger = logging.getLogger(__name__)
 router = APIRouter(

@@ -8,9 +8,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
+
+from app.utils.limiter import limiter
 
 from app.database import init_db, shutdown_db
 from app.routers import waitlist, admin
@@ -43,12 +44,6 @@ if os.environ.get("ENABLE_DEV_CORS", "false").lower() == "true":
         ]
     )
 
-# ── Rate limiter (10 req/min per IP, stricter on admin) ─────────────
-limiter = Limiter(
-    key_func=get_remote_address,
-    default_limits=["10/minute"],
-    headers_enabled=True,
-)
 
 
 # ── Lifespan (startup / shutdown) ──────────────────────────────────
