@@ -2,7 +2,7 @@ version: "2.0"
 
 services:
   sentient-api:
-    image: ghcr.io/toxmon/sentient-api:1.1.1
+    image: ghcr.io/toxmon/sentient-api:1.1.2
     env:
       # Secrets set at deploy time: provider-services tx deployment create deploy.yaml
       - "ADMIN_API_KEY=$ADMIN_API_KEY"
