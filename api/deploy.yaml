@@ -2,7 +2,7 @@ version: "2.0"
 
 services:
   sentient-api:
-    image: sentient-api:1.1.0
+    image: ghcr.io/toxmon/sentient-api:1.1.0
     env:
       # Secrets MUST be set at deploy time via Akash CLI or provider.
       # Never commit real values here. Use: akash deployment create deploy.yaml
