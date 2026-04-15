@@ -25,7 +25,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("sentient-api")
 
-VERSION = "1.1.2"
+VERSION = "1.1.3"
 START_TIME: float = 0.0
 
 # ── CORS origins (regex-based for *.here.now subdomains) ───────────
