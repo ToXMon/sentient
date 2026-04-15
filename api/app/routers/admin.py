@@ -5,7 +5,7 @@ import io
 import logging
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
-from sqlalchemy import select, func
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -55,23 +55,33 @@ async def export_signups(
 
     output = io.StringIO()
     writer = csv.writer(output)
-    writer.writerow([
-        "id", "email", "name", "referral_source",
-        "queue_position", "ip_hash", "user_agent",
-        "created_at", "verified",
-    ])
+    writer.writerow(
+        [
+            "id",
+            "email",
+            "name",
+            "referral_source",
+            "queue_position",
+            "ip_hash",
+            "user_agent",
+            "created_at",
+            "verified",
+        ]
+    )
     for entry in entries:
-        writer.writerow([
-            entry.id,
-            entry.email,
-            entry.name or "",
-            entry.referral_source or "",
-            entry.queue_position,
-            entry.ip_hash or "",
-            entry.user_agent or "",
-            entry.created_at.isoformat() if entry.created_at else "",
-            entry.verified,
-        ])
+        writer.writerow(
+            [
+                entry.id,
+                entry.email,
+                entry.name or "",
+                entry.referral_source or "",
+                entry.queue_position,
+                entry.ip_hash or "",
+                entry.user_agent or "",
+                entry.created_at.isoformat() if entry.created_at else "",
+                entry.verified,
+            ]
+        )
 
     output.seek(0)
     logger.info("CSV export requested: %d entries", len(entries))
@@ -99,5 +109,7 @@ async def delete_signup(
 
     await db.delete(entry)
     await db.commit()
-    logger.info("Deleted signup id=%d queue_position=%d", signup_id, entry.queue_position)
+    logger.info(
+        "Deleted signup id=%d queue_position=%d", signup_id, entry.queue_position
+    )
     return {"success": True, "message": "Signup deleted"}

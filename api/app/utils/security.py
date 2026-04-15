@@ -4,7 +4,6 @@ import os
 import re
 import html
 import hashlib
-import secrets
 import logging
 from fastapi import Header, HTTPException, Request
 
@@ -18,12 +17,8 @@ _DANGEROUS_PATTERNS = re.compile(
     r"svg|math|style|link|meta|base|applet|body|html|head)[^>]*>",
     re.IGNORECASE | re.DOTALL,
 )
-_EVENT_HANDLERS = re.compile(
-    r"\bon\w+\s*=", re.IGNORECASE
-)
-_JS_PROTOCOL = re.compile(
-    r"(javascript|vbscript|data)\s*:", re.IGNORECASE
-)
+_EVENT_HANDLERS = re.compile(r"\bon\w+\s*=", re.IGNORECASE)
+_JS_PROTOCOL = re.compile(r"(javascript|vbscript|data)\s*:", re.IGNORECASE)
 
 
 def sanitize_text(value: str | None, max_length: int = 255) -> str | None:
@@ -49,6 +44,7 @@ def sanitize_text(value: str | None, max_length: int = 255) -> str | None:
 
 # ── Hashing ────────────────────────────────────────────────────────
 
+
 def hash_ip(ip_address: str) -> str:
     """Hash an IP address with SHA256 for GDPR compliance.
 
@@ -68,19 +64,14 @@ def hash_email(email: str) -> str:
 
 # ── API key verification ───────────────────────────────────────────
 
+
 async def verify_api_key(x_api_key: str = Header(..., alias="X-API-Key")) -> str:
     """Dependency to verify admin API key."""
     if not ADMIN_API_KEY:
         logger.error("ADMIN_API_KEY environment variable not set")
-        raise HTTPException(
-            status_code=503,
-            detail="Service temporarily unavailable"
-        )
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable")
         logger.warning("Invalid API key attempt")
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid API key"
-        )
+        raise HTTPException(status_code=401, detail="Invalid API key")
     return x_api_key
 
 

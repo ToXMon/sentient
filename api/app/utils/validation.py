@@ -23,6 +23,7 @@ def verify_mx_records(domain: str) -> bool:
     """Check if domain has valid MX or A records."""
     try:
         import dns.resolver
+
         answers = dns.resolver.resolve(domain, "MX")
         return len(answers) > 0
     except ImportError:
@@ -31,6 +32,7 @@ def verify_mx_records(domain: str) -> bool:
     except Exception:
         try:
             import dns.resolver
+
             dns.resolver.resolve(domain, "A")
             return True
         except Exception:

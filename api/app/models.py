@@ -12,6 +12,7 @@ def _utcnow() -> datetime:
 
 class WaitlistEntry(Base):
     """Waitlist signup entry."""
+
     __tablename__ = "waitlist_entries"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)

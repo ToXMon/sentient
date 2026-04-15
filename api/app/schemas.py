@@ -7,6 +7,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 # ── Request schemas ──
 
+
 class WaitlistSubmit(BaseModel):
     email: EmailStr
     name: Optional[str] = Field(None, max_length=255)
@@ -14,6 +15,7 @@ class WaitlistSubmit(BaseModel):
 
 
 # ── Response schemas ──
+
 
 class WaitlistResponse(BaseModel):
     id: int

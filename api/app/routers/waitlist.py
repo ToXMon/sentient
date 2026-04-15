@@ -121,7 +121,9 @@ async def get_queue_position(email_hash: str, db: AsyncSession = Depends(get_db)
     Hash must be exactly 64 hex characters (SHA256 output).
     """
     # Validate hash format to prevent abuse
-    if len(email_hash) != 64 or not all(c in "0123456789abcdef" for c in email_hash.lower()):
+    if len(email_hash) != 64 or not all(
+        c in "0123456789abcdef" for c in email_hash.lower()
+    ):
         return QueuePositionResponse(
             found=False,
             email_hash=email_hash[:16] + "...",

@@ -1,8 +1,8 @@
 """Sentient Waitlist API — FastAPI application entry point."""
 
 import logging
+import os
 import time
-import traceback
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -35,12 +35,13 @@ ALLOWED_ORIGINS = [
 ]
 
 # Dev-only origins (strip in production)
-import os
 if os.environ.get("ENABLE_DEV_CORS", "false").lower() == "true":
-    ALLOWED_ORIGINS.extend([
-        "http://localhost:3000",
-        "http://localhost:8000",
-    ])
+    ALLOWED_ORIGINS.extend(
+        [
+            "http://localhost:3000",
+            "http://localhost:8000",
+        ]
+    )
 
 # ── Rate limiter (10 req/min per IP, stricter on admin) ─────────────
 limiter = Limiter(
@@ -68,9 +69,9 @@ app = FastAPI(
     description="Waitlist management API for sentient.fyi",
     version=VERSION,
     lifespan=lifespan,
-    docs_url=None,       # Disable /docs in production
-    redoc_url=None,      # Disable /redoc in production
-    openapi_url=None,    # Disable /openapi.json in production
+    docs_url=None,  # Disable /docs in production
+    redoc_url=None,  # Disable /redoc in production
+    openapi_url=None,  # Disable /openapi.json in production
 )
 
 # ── Re-enable docs only with explicit env flag ─────────────────────
@@ -101,7 +102,10 @@ async def add_security_headers(request: Request, call_next):
         "default-src 'none'; frame-ancestors 'none'"
     )
     # HSTS only if served over TLS (proxied via here.now)
-    if request.url.scheme == "https" or request.headers.get("x-forwarded-proto") == "https":
+    if (
+        request.url.scheme == "https"
+        or request.headers.get("x-forwarded-proto") == "https"
+    ):
         response.headers["Strict-Transport-Security"] = (
             "max-age=63072000; includeSubDomains; preload"
         )
@@ -117,7 +121,10 @@ async def limit_request_size(request: Request, call_next):
     if content_length and int(content_length) > 1_048_576:  # 1MB
         return JSONResponse(
             status_code=413,
-            content={"error": "Request too large", "detail": "Maximum request size is 1MB"},
+            content={
+                "error": "Request too large",
+                "detail": "Maximum request size is 1MB",
+            },
         )
     return await call_next(request)
 
@@ -127,7 +134,9 @@ async def limit_request_size(request: Request, call_next):
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error(
         "Unhandled exception on %s %s: %s",
-        request.method, request.url.path, str(exc),
+        request.method,
+        request.url.path,
+        str(exc),
     )
     # Never leak stack traces to clients
     return JSONResponse(
