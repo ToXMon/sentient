@@ -36,11 +36,9 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 # Security: use tini as PID 1 to handle signals properly
 ENTRYPOINT ["/sbin/tini", "--"]
 
-# Security: resource-conscious uvicorn config
 CMD ["uvicorn", "app.main:app", \
      "--host", "0.0.0.0", \
      "--port", "8000", \
      "--workers", "1", \
      "--timeout-keep-alive", "5", \
-     "--limit-max-header-size", "16384", \
      "--limit-concurrency", "50"]
