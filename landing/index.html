@@ -1906,8 +1906,9 @@
                 this.queueNum = document.getElementById('queueNum');
                 this.confetti = new ConfettiSystem(document.getElementById('confettiCanvas'));
 
-                // API endpoint — relative path proxied by here.now
-                this.apiEndpoint = '/api/waitlist';
+                // API endpoint — direct Akash backend
+                this.apiBase = 'http://ha3cmvvpmlcr181854t38urpdk.ingress.ahn4-na-4090.akash.pub';
+                this.apiEndpoint = `${this.apiBase}/api/waitlist`;
 
                 // Check if already signed up
                 const stored = localStorage.getItem('sentient_waitlist');

@@ -28,21 +28,11 @@ logger = logging.getLogger("sentient-api")
 VERSION = "1.1.1"
 START_TIME: float = 0.0
 
-# ── Allowed CORS origins (locked down) ────────────────────────────
-ALLOWED_ORIGINS = [
-    "https://sentient.fyi",
-    "https://www.sentient.fyi",
-    "https://here.now",
-]
-
+# ── CORS origins (regex-based for *.here.now subdomains) ───────────
 # Dev-only origins (strip in production)
+DEV_CORS_REGEX = None
 if os.environ.get("ENABLE_DEV_CORS", "false").lower() == "true":
-    ALLOWED_ORIGINS.extend(
-        [
-            "http://localhost:3000",
-            "http://localhost:8000",
-        ]
-    )
+    DEV_CORS_REGEX = r"http://localhost:(3000|8000)"
 
 
 # ── Lifespan (startup / shutdown) ──────────────────────────────────
@@ -139,13 +129,17 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
-# ── CORS (strict) ──────────────────────────────────────────────────
+# ── CORS (regex-based for here.now subdomains) ────────────────────
+_cors_origins_regex = r"https://[a-z0-9-]+\.here\.now"
+if DEV_CORS_REGEX:
+    _cors_origins_regex = f"({_cors_origins_regex}|{DEV_CORS_REGEX})"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
+    allow_origin_regex=_cors_origins_regex,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],  # Only needed methods
-    allow_headers=["Content-Type", "X-API-Key"],  # Only needed headers
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "X-API-Key"],
     max_age=3600,
 )
 
