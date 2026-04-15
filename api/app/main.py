@@ -25,7 +25,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("sentient-api")
 
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 START_TIME: float = 0.0
 
 # ── Allowed CORS origins (locked down) ────────────────────────────
